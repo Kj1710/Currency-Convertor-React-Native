@@ -49,8 +49,11 @@ const Main = () => {
         setConvertedAmount("");
     }
 
+    const majorCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'AUD' , 'INR']; 
+
     return (
         <View style={styles.container}>
+            <Text style={styles.header}>Currency Converter</Text>
             <View style={styles.section}>
                 <TextInput
                     style={styles.input}
@@ -66,7 +69,7 @@ const Main = () => {
                         style={styles.picker}
                         selectedValue={basecur}
                         onValueChange={(value) => {setBaseCur(value); convertAmount(amount);}}>
-                        {Object.keys(conversionRates).map((currency) => (
+                        {majorCurrencies.map((currency) => (
                             <Picker.Item key={currency} label={currency} value={currency} />
                         ))}
                     </Picker>
@@ -74,7 +77,9 @@ const Main = () => {
                         style={styles.picker}
                         selectedValue={finalcur}
                         onValueChange={(value) => {setFinalCur(value); convertAmount(amount);}}>
-                        {Object.keys(conversionRates).map((currency) => (
+                        {majorCurrencies
+                        .filter((currency)=> currency !== basecur)
+                        .map((currency) => (
                             <Picker.Item key={currency} label={currency} value={currency} />
                         ))}
                     </Picker>
@@ -100,6 +105,11 @@ const styles = StyleSheet.create({
         alignItems: "center",
         paddingHorizontal: 20,
         backgroundColor: "#F5F5F5",
+    },
+    header: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
     },
     section: {
         width: '100%',
