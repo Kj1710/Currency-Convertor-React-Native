@@ -3,6 +3,7 @@ import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import { MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Main = () => {
     const [basecur, setBaseCur] = useState("USD");
@@ -13,7 +14,12 @@ const Main = () => {
 
     useEffect(() => {
         fetchData(basecur);
+        loadData();
     }, [basecur]);
+
+    useEffect(()=>{
+        StoreData();
+    },[amount,basecur,finalcur])
 
     const fetchData = async (currency) => {
         try {
@@ -47,6 +53,35 @@ const Main = () => {
     const clear = () => {
         setAmount("");
         setConvertedAmount("");
+    }
+
+    const StoreData= async()=>{
+        try {
+            await AsyncStorage.setItem("amount",amount)
+            await AsyncStorage.setItem("basecur",basecur)
+            await AsyncStorage.setItem("finalcur",finalcur)
+        } catch (error) {
+            console.log("Error Storing " , error)
+        }
+    }
+
+    const loadData=async()=>{
+        try {
+         const loadamount=   await AsyncStorage.getItem("amount")
+           const loadbasecur= await AsyncStorage.getItem("basecur")
+           const loadfinalcur= await AsyncStorage.getItem("finalcur")
+            if (loadamount !== null){
+                setAmount(loadamount)
+            }
+            if (loadbasecur!== null){
+                setBaseCur(basecur)
+            }
+            if (loadamount !== null){
+                setFinalCur(finalcur)
+            }
+        } catch (error) {
+            console.log("Error loading data " , error)
+        }
     }
 
     const majorCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'AUD' , 'INR']; 
