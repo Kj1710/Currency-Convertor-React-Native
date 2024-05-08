@@ -1,8 +1,8 @@
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
-import { MaterialIcons } from '@expo/vector-icons'; // Import MaterialIcons for icons
+import { MaterialIcons } from '@expo/vector-icons';
 
 const Main = () => {
     const [basecur, setBaseCur] = useState("USD");
@@ -18,32 +18,30 @@ const Main = () => {
     const fetchData = async (currency) => {
         try {
             const data = await axios.get(`https://v6.exchangerate-api.com/v6/eb90a3ea22e4edf6e59c7c22/latest/${currency}`);
-            console.log(data.data.conversion_rates);
             setConversionRates(data.data.conversion_rates);
-            convertAmount(amount); // Trigger conversion when conversion rates are updated
+            convertAmount(amount);
         } catch (error) {
             console.log("Error fetching data:", error);
         }
     }
 
     const handleAmountChange = (value) => {
-        setAmount(value);
-        convertAmount(value);
         if (/^\d*\.?\d*$/.test(value)) {
             setAmount(value);
+            convertAmount(value);
         }
     }
 
     const convertAmount = (value) => {
         const rate = conversionRates[finalcur];
         const converted = parseFloat(value) * rate;
-        setConvertedAmount(converted.toFixed(2)); // Round to 2 decimal places
+        setConvertedAmount(converted.toFixed(2));
     };
 
     const swap = () => {
         setBaseCur(finalcur);
         setFinalCur(basecur);
-        convertAmount(amount); // Trigger conversion when currencies are swapped
+        convertAmount(amount);
     }
     
     const clear = () => {
@@ -53,37 +51,41 @@ const Main = () => {
 
     return (
         <View style={styles.container}>
-            <TextInput
-                style={styles.input}
-                placeholder='Enter The Amount'
-                keyboardType='numeric'
-                value={amount}
-                onChangeText={handleAmountChange}
-            />
-            <View style={styles.pickerContainer}>
-                <Picker
-                    style={styles.picker}
-                    selectedValue={basecur}
-                    onValueChange={(value) => {setBaseCur(value); convertAmount(amount);}}>
-                    {Object.keys(conversionRates).map((currency) => (
-                        <Picker.Item key={currency} label={currency} value={currency} />
-                    ))}
-                </Picker>
-                <MaterialIcons name="swap-vert" size={24} color="black" onPress={swap} />
-                <Picker
-                    style={styles.picker}
-                    selectedValue={finalcur}
-                    onValueChange={(value) => {setFinalCur(value); convertAmount(amount);}}>
-                    {Object.keys(conversionRates).map((currency) => (
-                        <Picker.Item key={currency} label={currency} value={currency} />
-                    ))}
-                </Picker>
+            <View style={styles.section}>
+                <TextInput
+                    style={styles.input}
+                    placeholder='Enter The Amount'
+                    keyboardType='numeric'
+                    value={amount}
+                    onChangeText={handleAmountChange}
+                />
             </View>
-            
-            <Text>{`Converted Amount: ${convertedAmount}`}</Text>
-            <View style={styles.buttonContainer}>
-                <Button title='Convert' onPress={convertAmount} />
-                <Button title='Clear' onPress={clear} />
+            <View style={styles.section}>
+                <View style={styles.pickerContainer}>
+                    <Picker
+                        style={styles.picker}
+                        selectedValue={basecur}
+                        onValueChange={(value) => {setBaseCur(value); convertAmount(amount);}}>
+                        {Object.keys(conversionRates).map((currency) => (
+                            <Picker.Item key={currency} label={currency} value={currency} />
+                        ))}
+                    </Picker>
+                    <Picker
+                        style={styles.picker}
+                        selectedValue={finalcur}
+                        onValueChange={(value) => {setFinalCur(value); convertAmount(amount);}}>
+                        {Object.keys(conversionRates).map((currency) => (
+                            <Picker.Item key={currency} label={currency} value={currency} />
+                        ))}
+                    </Picker>
+                </View>
+                <View style={styles.buttonContainer}>
+                    <Button title='Convert' onPress={convertAmount} color="#4CAF50" />
+                    <Button title='Clear' onPress={clear} color="#FF5733" />
+                    <MaterialIcons name="arrow-forward" size={24} color="black" onPress={convertAmount} />
+                    <MaterialIcons name="swap-vert" size={24} color="black" onPress={swap} />
+                </View>
+                <Text style={styles.resultText}>{`Converted Amount: ${convertedAmount}`}</Text>
             </View>
         </View>
     );
@@ -95,28 +97,39 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        paddingHorizontal: 20,
+        backgroundColor: "#F5F5F5",
+    },
+    section: {
+        width: '100%',
+        marginBottom: 20,
     },
     input: {
-        width: "90%",
-        height: 30,
+        height: 40,
         borderWidth: 1,
         borderRadius: 15,
-        marginBottom: 10
+        paddingHorizontal: 10,
+        backgroundColor: '#FFFFFF',
     },
     pickerContainer: {
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'space-between',
+        marginBottom: 10,
     },
     picker: {
         flex: 1,
-        height: 50
+        height: 50,
+        marginRight: 10,
+        backgroundColor: '#FFFFFF',
     },
     buttonContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        width: '80%',
-        marginTop: 20
+        justifyContent: 'space-between',
+        marginBottom: 10,
+    },
+    resultText: {
+        marginTop: 20,
+        fontSize: 16,
     }
 });
