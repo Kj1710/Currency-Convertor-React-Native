@@ -60,7 +60,7 @@ const Main = () => {
                     onChangeText={handleAmountChange}
                 />
             </View>
-            <View style={styles.section}>
+            <View style={styles.section2}>
                 <View style={styles.pickerContainer}>
                     <Picker
                         style={styles.picker}
@@ -82,7 +82,7 @@ const Main = () => {
                 <View style={styles.buttonContainer}>
                     <Button title='Convert' onPress={convertAmount} color="#4CAF50" />
                     <Button title='Clear' onPress={clear} color="#FF5733" />
-                    <MaterialIcons name="arrow-forward" size={24} color="black" onPress={convertAmount} />
+                   
                     <MaterialIcons name="swap-vert" size={24} color="black" onPress={swap} />
                 </View>
                 <Text style={styles.resultText}>{`Converted Amount: ${convertedAmount}`}</Text>
@@ -112,14 +112,18 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         backgroundColor: '#FFFFFF',
     },
+    section2: {
+        width: '100%',
+        marginBottom: 20,
+    },
     pickerContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 10,
+        marginBottom: 100,
     },
     picker: {
         flex: 1,
-        height: 50,
+        height: 70,
         marginRight: 10,
         backgroundColor: '#FFFFFF',
     },
@@ -127,6 +131,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 10,
+        marginTop:50,
     },
     resultText: {
         marginTop: 20,
