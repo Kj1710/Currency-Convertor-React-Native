@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button, StyleSheet, Text, TextInput,KeyboardAvoidingView ,View, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -32,10 +32,18 @@ const Main = () => {
     }
 
     const handleAmountChange = (value) => {
-        if (/^\d*\.?\d*$/.test(value)) {
-            setAmount(value);
-            convertAmount(value);
+        // Check for negative value or special characters
+        if (value.includes('-') || /[^0-9.]/.test(value)) {
+            Alert.alert(
+                "Invalid Input",
+                "Please enter a valid positive numeric value without special characters or negative sign.",
+                [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+            );
+            return;
         }
+
+        setAmount(value);
+        convertAmount(value);
     }
 
     const convertAmount = (value) => {
@@ -67,9 +75,9 @@ const Main = () => {
 
     const loadData=async()=>{
         try {
-         const loadamount=   await AsyncStorage.getItem("amount")
-           const loadbasecur= await AsyncStorage.getItem("basecur")
-           const loadfinalcur= await AsyncStorage.getItem("finalcur")
+            const loadamount=   await AsyncStorage.getItem("amount")
+            const loadbasecur= await AsyncStorage.getItem("basecur")
+            const loadfinalcur= await AsyncStorage.getItem("finalcur")
             if (loadamount !== null){
                 setAmount(loadamount)
             }
@@ -87,6 +95,7 @@ const Main = () => {
     const majorCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'AUD' , 'INR']; 
 
     return (
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" keyboardVerticalOffset={100}>
         <View style={styles.container}>
             <Text style={styles.header}>Currency Converter</Text>
             <View style={styles.section}>
@@ -128,6 +137,7 @@ const Main = () => {
                 <Text style={styles.resultText}>{`Converted Amount: ${convertedAmount}`}</Text>
             </View>
         </View>
+        </KeyboardAvoidingView>
     );
 }
 
