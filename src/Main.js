@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
@@ -11,7 +11,7 @@ const Main = () => {
     const [convertedAmount, setConvertedAmount] = useState("");
 
     useEffect(() => {
-        // fetchData(basecur);
+        fetchData(basecur);
     }, [basecur]);
 
     const fetchData = async (currency) => {
@@ -34,6 +34,16 @@ const Main = () => {
         const converted = parseFloat(value) * rate;
         setConvertedAmount(converted.toFixed(2)); // Round to 2 decimal places
     };
+
+    const swap =() =>{
+        setbasecur(finalcur);
+        setfinalcur(basecur);
+    }
+    
+    const clear=()=>{
+        setAmount("");
+        setConvertedAmount("");
+    }
 
     const targetcurrencyItem = Object.keys(conversionRates)
         .filter((currency) => currency !== basecur)
@@ -64,8 +74,14 @@ const Main = () => {
                 onValueChange={(value) => setfinalcur(value)}>
                 {targetcurrencyItem}
             </Picker>
-            <TouchableOpacity  onPress={convertAmount}></TouchableOpacity>
+            
             <Text>{`Converted Amount: ${convertedAmount}`}</Text>
+            <View>
+                <Button title='Convert' onPress={handleAmountChange}></Button>
+                <Button title="swap" onPress={swap}></Button>
+
+                <Button title='clear' onPress={clear}></Button>
+            </View>
         </View>
     );
 }
